@@ -1,0 +1,12 @@
+{
+  "itemGroup.interactableapi": "Example Mod Tab",
+  "block.interactableapi.example_block": "Example Block",
+  "item.interactableapi.example_item": "Example Item",
+  "interactableapi.configuration.title": "Interactable API Configs",
+  "interactableapi.configuration.section.interactableapi.common.toml": "Interactable API Configs",
+  "interactableapi.configuration.section.interactableapi.common.toml.title": "Interactable API Configs",
+  "interactableapi.configuration.items": "Item List",
+  "interactableapi.configuration.logDirtBlock": "Log Dirt Block",
+  "interactableapi.configuration.magicNumberIntroduction": "Magic Number Text",
+  "interactableapi.configuration.magicNumber": "Magic Number"
+}
