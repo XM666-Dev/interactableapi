@@ -10,6 +10,15 @@
     "requireAnnotations": true
   },
   "client": [
-    "VirtualEntityMixin"
+    "VirtualClientLevelMixin",
+    "VirtualEntityMixin",
+    "VirtualFoodDataMixin",
+    "VirtualItemCooldownsMixin",
+    "VirtualItemStackMixin",
+    "VirtualLevelMixin",
+    "VirtualLivingEntityMixin",
+    "VirtualLocalPlayerMixin",
+    "VirtualMobMixin",
+    "VirtualPlayerMixin"
   ]
 }
