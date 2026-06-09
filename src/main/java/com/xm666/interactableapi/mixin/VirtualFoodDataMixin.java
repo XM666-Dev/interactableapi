@@ -44,12 +44,6 @@ public class VirtualFoodDataMixin {
         original.call(compoundTag);
     }
 
-    @WrapMethod(method = "addAdditionalSaveData")
-    private void addAdditionalSaveData(CompoundTag compoundTag, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(compoundTag);
-    }
-
     @WrapMethod(method = "addExhaustion")
     private void addExhaustion(float exhaustion, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;

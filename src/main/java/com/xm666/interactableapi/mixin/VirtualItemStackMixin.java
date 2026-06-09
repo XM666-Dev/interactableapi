@@ -14,7 +14,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -93,6 +92,12 @@ public class VirtualItemStackMixin {
     private boolean overrideOtherStackedOnMe(ItemStack stack, Slot slot, ClickAction action, Player player, SlotAccess access, Operation<Boolean> original) {
         if (InteractableHandler.virtualizesInteract()) return false;
         return original.call(stack, slot, action, player, access);
+    }
+
+    @WrapMethod(method = "hurtEnemy")
+    private boolean hurtEnemy(LivingEntity target, Player attacker, Operation<Boolean> original) {
+        if (InteractableHandler.virtualizesInteract()) return true;
+        return original.call(target, attacker);
     }
 
     @WrapMethod(method = "postHurtEnemy")
@@ -231,11 +236,5 @@ public class VirtualItemStackMixin {
     private void onUseTick(Level level, LivingEntity livingEntity, int count, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(level, livingEntity, count);
-    }
-
-    @WrapMethod(method = "onDestroyed")
-    private void onDestroyed(ItemEntity itemEntity, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(itemEntity);
     }
 }

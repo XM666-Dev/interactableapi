@@ -7,17 +7,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.api.distmarker.Dist;
@@ -32,28 +29,10 @@ import java.util.function.Predicate;
 @OnlyIn(Dist.CLIENT)
 @Mixin(Mob.class)
 public class VirtualMobMixin {
-    @WrapMethod(method = "registerGoals")
-    private void registerGoals(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
     @WrapMethod(method = "setPathfindingMalus")
     private void setPathfindingMalus(PathType pathType, float malus, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(pathType, malus);
-    }
-
-    @WrapMethod(method = "onPathfindingStart")
-    private void onPathfindingStart(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
-    @WrapMethod(method = "onPathfindingDone")
-    private void onPathfindingDone(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
     }
 
     @WrapMethod(method = "setTarget")
@@ -118,9 +97,8 @@ public class VirtualMobMixin {
 
     @WrapMethod(method = "tickHeadTurn")
     private float tickHeadTurn(float yRot, float animStep, Operation<Float> original) {
-        if (InteractableHandler.virtualizesInteract()) return yRot;
-        original.call(yRot, animStep);
-        return yRot;
+        if (InteractableHandler.virtualizesInteract()) return animStep;
+        return original.call(yRot, animStep);
     }
 
     @WrapMethod(method = "readAdditionalSaveData")
@@ -180,8 +158,7 @@ public class VirtualMobMixin {
     @WrapMethod(method = "equipItemIfPossible")
     private ItemStack equipItemIfPossible(ItemStack stack, Operation<ItemStack> original) {
         if (InteractableHandler.virtualizesInteract()) return stack;
-        original.call(stack);
-        return stack;
+        return original.call(stack);
     }
 
     @WrapMethod(method = "setItemSlotAndDropWhenKilled")
@@ -210,12 +187,6 @@ public class VirtualMobMixin {
 
     @WrapMethod(method = "sendDebugPackets")
     private void sendDebugPackets(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
-    @WrapMethod(method = "customServerAiStep")
-    private void customServerAiStep(Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call();
     }
@@ -307,8 +278,7 @@ public class VirtualMobMixin {
     @WrapMethod(method = "finalizeSpawn")
     private SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData spawnGroupData, Operation<SpawnGroupData> original) {
         if (InteractableHandler.virtualizesInteract()) return spawnGroupData;
-        original.call(level, difficulty, spawnType, spawnGroupData);
-        return spawnGroupData;
+        return original.call(level, difficulty, spawnType, spawnGroupData);
     }
 
     @WrapMethod(method = "setPersistenceRequired")
@@ -327,12 +297,6 @@ public class VirtualMobMixin {
     private void setCanPickUpLoot(boolean canPickUpLoot, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(canPickUpLoot);
-    }
-
-    @WrapMethod(method = "onOffspringSpawnedFromEgg")
-    private void onOffspringSpawnedFromEgg(Player player, Mob child, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(player, child);
     }
 
     @WrapMethod(method = "restrictTo")
@@ -373,9 +337,8 @@ public class VirtualMobMixin {
 
     @WrapMethod(method = "startRiding")
     private boolean startRiding(Entity entity, boolean force, Operation<Boolean> original) {
-        if (InteractableHandler.virtualizesInteract()) return force;
-        original.call(entity, force);
-        return force;
+        if (InteractableHandler.virtualizesInteract()) return true;
+        return original.call(entity, force);
     }
 
     @WrapMethod(method = "setNoAi")
@@ -396,28 +359,10 @@ public class VirtualMobMixin {
         original.call(aggressive);
     }
 
-    @WrapMethod(method = "setBaby")
-    private void setBaby(boolean baby, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(baby);
-    }
-
     @WrapMethod(method = "doHurtTarget")
     private boolean doHurtTarget(Entity entity, Operation<Boolean> original) {
         if (InteractableHandler.virtualizesInteract()) return true;
         return original.call(entity);
-    }
-
-    @WrapMethod(method = "playAttackSound")
-    private void playAttackSound(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
-    @WrapMethod(method = "jumpInLiquid")
-    private void jumpInLiquid(TagKey<Fluid> fluidTag, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(fluidTag);
     }
 
     @WrapMethod(method = "jumpInLiquidInternal")

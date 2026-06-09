@@ -11,7 +11,6 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -27,7 +26,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -310,22 +308,10 @@ public class VirtualLivingEntityMixin {
         original.call(p_level, damageSource);
     }
 
-    @WrapMethod(method = "dropEquipment")
-    private void dropEquipment(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
     @WrapMethod(method = "dropExperience")
     private void dropExperience(Entity entity, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(entity);
-    }
-
-    @WrapMethod(method = "dropCustomDeathLoot")
-    private void dropCustomDeathLoot(ServerLevel level, DamageSource damageSource, boolean recentlyHit, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(level, damageSource, recentlyHit);
     }
 
     @WrapMethod(method = "dropFromLootTable")
@@ -338,12 +324,6 @@ public class VirtualLivingEntityMixin {
     private void knockback(double strength, double x, double z, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(strength, x, z);
-    }
-
-    @WrapMethod(method = "indicateDamage")
-    private void indicateDamage(double xDistance, double zDistance, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(xDistance, zDistance);
     }
 
     @WrapMethod(method = "skipDropExperience")
@@ -376,24 +356,6 @@ public class VirtualLivingEntityMixin {
         original.call(yaw);
     }
 
-    @WrapMethod(method = "hurtArmor")
-    private void hurtArmor(DamageSource damageSource, float damageAmount, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(damageSource, damageAmount);
-    }
-
-    @WrapMethod(method = "hurtHelmet")
-    private void hurtHelmet(DamageSource damageSource, float damageAmount, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(damageSource, damageAmount);
-    }
-
-    @WrapMethod(method = "hurtCurrentlyUsedShield")
-    private void hurtCurrentlyUsedShield(float damageAmount, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(damageAmount);
-    }
-
     @WrapMethod(method = "doHurtEquipment")
     private void doHurtEquipment(DamageSource damageSource, float damageAmount, EquipmentSlot[] slots, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -403,15 +365,13 @@ public class VirtualLivingEntityMixin {
     @WrapMethod(method = "getDamageAfterArmorAbsorb")
     private float getDamageAfterArmorAbsorb(DamageSource damageSource, float damageAmount, Operation<Float> original) {
         if (InteractableHandler.virtualizesInteract()) return damageAmount;
-        original.call(damageSource, damageAmount);
-        return damageAmount;
+        return original.call(damageSource, damageAmount);
     }
 
     @WrapMethod(method = "getDamageAfterMagicAbsorb")
     private float getDamageAfterMagicAbsorb(DamageSource damageSource, float damageAmount, Operation<Float> original) {
         if (InteractableHandler.virtualizesInteract()) return damageAmount;
-        original.call(damageSource, damageAmount);
-        return damageAmount;
+        return original.call(damageSource, damageAmount);
     }
 
     @WrapMethod(method = "actuallyHurt")
@@ -486,12 +446,6 @@ public class VirtualLivingEntityMixin {
         original.call(hand, stack);
     }
 
-    @WrapMethod(method = "setItemSlot")
-    private void setItemSlot(EquipmentSlot par1, ItemStack par2, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(par1, par2);
-    }
-
     @WrapMethod(method = "verifyEquippedItem")
     private void verifyEquippedItem(ItemStack stack, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -522,18 +476,6 @@ public class VirtualLivingEntityMixin {
         original.call();
     }
 
-    @WrapMethod(method = "goDownInWater")
-    private void goDownInWater(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
-    @WrapMethod(method = "jumpInLiquid")
-    private void jumpInLiquid(TagKey<Fluid> fluidTag, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(fluidTag);
-    }
-
     @WrapMethod(method = "travel")
     private void travel(Vec3 travelVector, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -542,12 +484,6 @@ public class VirtualLivingEntityMixin {
 
     @WrapMethod(method = "travelRidden")
     private void travelRidden(Player player, Vec3 travelVector, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(player, travelVector);
-    }
-
-    @WrapMethod(method = "tickRidden")
-    private void tickRidden(Player player, Vec3 travelVector, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(player, travelVector);
     }
@@ -567,15 +503,13 @@ public class VirtualLivingEntityMixin {
     @WrapMethod(method = "handleRelativeFrictionAndCalculateMovement")
     private Vec3 handleRelativeFrictionAndCalculateMovement(Vec3 deltaMovement, float friction, Operation<Vec3> original) {
         if (InteractableHandler.virtualizesInteract()) return deltaMovement;
-        original.call(deltaMovement, friction);
-        return deltaMovement;
+        return original.call(deltaMovement, friction);
     }
 
     @WrapMethod(method = "handleOnClimbable")
     private Vec3 handleOnClimbable(Vec3 deltaMovement, Operation<Vec3> original) {
         if (InteractableHandler.virtualizesInteract()) return deltaMovement;
-        original.call(deltaMovement);
-        return deltaMovement;
+        return original.call(deltaMovement);
     }
 
     @WrapMethod(method = "setSpeed")
@@ -651,12 +585,6 @@ public class VirtualLivingEntityMixin {
         original.call();
     }
 
-    @WrapMethod(method = "serverAiStep")
-    private void serverAiStep(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
     @WrapMethod(method = "pushEntities")
     private void pushEntities(Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -673,12 +601,6 @@ public class VirtualLivingEntityMixin {
     private void doPush(Entity entity, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(entity);
-    }
-
-    @WrapMethod(method = "doAutoAttackOnTouch")
-    private void doAutoAttackOnTouch(LivingEntity target, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(target);
     }
 
     @WrapMethod(method = "stopRiding")
@@ -745,18 +667,6 @@ public class VirtualLivingEntityMixin {
     private void internalSetAbsorptionAmount(float absorptionAmount, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(absorptionAmount);
-    }
-
-    @WrapMethod(method = "onEnterCombat")
-    private void onEnterCombat(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
-    @WrapMethod(method = "onLeaveCombat")
-    private void onLeaveCombat(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
     }
 
     @WrapMethod(method = "updateEffectVisibility")
@@ -839,15 +749,8 @@ public class VirtualLivingEntityMixin {
 
     @WrapMethod(method = "randomTeleport")
     private boolean randomTeleport(double x, double y, double z, boolean broadcastTeleport, Operation<Boolean> original) {
-        if (InteractableHandler.virtualizesInteract()) return broadcastTeleport;
-        original.call(x, y, z, broadcastTeleport);
-        return broadcastTeleport;
-    }
-
-    @WrapMethod(method = "setRecordPlayingNearby")
-    private void setRecordPlayingNearby(BlockPos jukebox, boolean partyParrot, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(jukebox, partyParrot);
+        if (InteractableHandler.virtualizesInteract()) return true;
+        return original.call(x, y, z, broadcastTeleport);
     }
 
     @WrapMethod(method = "setSleepingPos")
@@ -883,15 +786,13 @@ public class VirtualLivingEntityMixin {
     @WrapMethod(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;")
     private ItemStack eat(Level level, ItemStack food, Operation<ItemStack> original) {
         if (InteractableHandler.virtualizesInteract()) return food;
-        original.call(level, food);
-        return food;
+        return original.call(level, food);
     }
 
     @WrapMethod(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;")
     private ItemStack eat(Level level, ItemStack food, FoodProperties foodProperties, Operation<ItemStack> original) {
         if (InteractableHandler.virtualizesInteract()) return food;
-        original.call(level, food, foodProperties);
-        return food;
+        return original.call(level, food, foodProperties);
     }
 
     @WrapMethod(method = "addEatEffect")

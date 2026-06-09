@@ -32,23 +32,10 @@ import org.spongepowered.asm.mixin.Mixin;
 @OnlyIn(Dist.CLIENT)
 @Mixin(LocalPlayer.class)
 public class VirtualLocalPlayerMixin {
-    @WrapMethod(method = "hurt")
-    private boolean hurt(DamageSource source, float amount, Operation<Boolean> original) {
-        if (InteractableHandler.virtualizesInteract()) return true;
-        return original.call(source, amount);
-    }
-
-    @WrapMethod(method = "heal")
-    private void heal(float healAmount, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(healAmount);
-    }
-
     @WrapMethod(method = "startRiding")
     private boolean startRiding(Entity entity, boolean force, Operation<Boolean> original) {
         if (InteractableHandler.virtualizesInteract()) return force;
-        original.call(entity, force);
-        return force;
+        return original.call(entity, force);
     }
 
     @WrapMethod(method = "removeVehicle")
@@ -77,9 +64,8 @@ public class VirtualLocalPlayerMixin {
 
     @WrapMethod(method = "drop")
     private boolean drop(boolean fullStack, Operation<Boolean> original) {
-        if (InteractableHandler.virtualizesInteract()) return fullStack;
-        original.call(fullStack);
-        return fullStack;
+        if (InteractableHandler.virtualizesInteract()) return true;
+        return original.call(fullStack);
     }
 
     @WrapMethod(method = "swing")

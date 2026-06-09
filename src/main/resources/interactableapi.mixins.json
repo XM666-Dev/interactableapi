@@ -10,6 +10,7 @@
     "requireAnnotations": true
   },
   "client": [
+    "VirtualClientCommonPacketListenerImplMixin",
     "VirtualClientLevelMixin",
     "VirtualEntityMixin",
     "VirtualFoodDataMixin",

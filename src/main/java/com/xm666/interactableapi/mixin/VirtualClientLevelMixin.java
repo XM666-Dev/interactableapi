@@ -124,6 +124,12 @@ public class VirtualClientLevelMixin {
         original.call(chunkPos);
     }
 
+    @WrapMethod(method = "clearTintCaches")
+    private void clearTintCaches(Operation<Void> original) {
+        if (InteractableHandler.virtualizesInteract()) return;
+        original.call();
+    }
+
     @WrapMethod(method = "addEntity")
     private void addEntity(Entity entity, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -216,12 +222,6 @@ public class VirtualClientLevelMixin {
 
     @WrapMethod(method = "overrideMapData")
     private void overrideMapData(MapId mapId, MapItemSavedData mapData, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(mapId, mapData);
-    }
-
-    @WrapMethod(method = "setMapData")
-    private void setMapData(MapId mapId, MapItemSavedData mapData, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(mapId, mapData);
     }

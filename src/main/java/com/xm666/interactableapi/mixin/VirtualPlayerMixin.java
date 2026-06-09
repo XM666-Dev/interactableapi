@@ -7,42 +7,25 @@ import com.xm666.interactableapi.api.InteractableHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stat;
 import net.minecraft.util.Unit;
-import net.minecraft.world.Container;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.trading.MerchantOffers;
-import net.minecraft.world.level.BaseCommandBlock;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.CommandBlockEntity;
-import net.minecraft.world.level.block.entity.JigsawBlockEntity;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.StructureBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @OnlyIn(Dist.CLIENT)
 @Mixin(Player.class)
@@ -83,12 +66,6 @@ public class VirtualPlayerMixin {
         original.call(sound, volume, pitch);
     }
 
-    @WrapMethod(method = "playNotifySound")
-    private void playNotifySound(SoundEvent sound, SoundSource source, float volume, float pitch, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(sound, source, volume, pitch);
-    }
-
     @WrapMethod(method = "handleEntityEvent")
     private void handleEntityEvent(byte id, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -97,12 +74,6 @@ public class VirtualPlayerMixin {
 
     @WrapMethod(method = "closeContainer")
     private void closeContainer(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
-    @WrapMethod(method = "doCloseContainer")
-    private void doCloseContainer(Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call();
     }
@@ -191,12 +162,6 @@ public class VirtualPlayerMixin {
         original.call(compound);
     }
 
-    @WrapMethod(method = "addAdditionalSaveData")
-    private void addAdditionalSaveData(CompoundTag compound, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(compound);
-    }
-
     @WrapMethod(method = "hurt")
     private boolean hurt(DamageSource source, float amount, Operation<Boolean> original) {
         if (InteractableHandler.virtualizesInteract()) return false;
@@ -233,60 +198,6 @@ public class VirtualPlayerMixin {
         original.call(damageSrc, damageAmount);
     }
 
-    @WrapMethod(method = "openTextEdit")
-    private void openTextEdit(SignBlockEntity signEntity, boolean isFrontText, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(signEntity, isFrontText);
-    }
-
-    @WrapMethod(method = "openMinecartCommandBlock")
-    private void openMinecartCommandBlock(BaseCommandBlock commandEntity, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(commandEntity);
-    }
-
-    @WrapMethod(method = "openCommandBlock")
-    private void openCommandBlock(CommandBlockEntity commandBlockEntity, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(commandBlockEntity);
-    }
-
-    @WrapMethod(method = "openStructureBlock")
-    private void openStructureBlock(StructureBlockEntity structureEntity, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(structureEntity);
-    }
-
-    @WrapMethod(method = "openJigsawBlock")
-    private void openJigsawBlock(JigsawBlockEntity jigsawBlockEntity, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(jigsawBlockEntity);
-    }
-
-    @WrapMethod(method = "openHorseInventory")
-    private void openHorseInventory(AbstractHorse horse, Container inventory, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(horse, inventory);
-    }
-
-    @WrapMethod(method = "openMenu")
-    private OptionalInt openMenu(MenuProvider menu, Operation<OptionalInt> original) {
-        if (InteractableHandler.virtualizesInteract()) return OptionalInt.empty();
-        return original.call(menu);
-    }
-
-    @WrapMethod(method = "sendMerchantOffers")
-    private void sendMerchantOffers(int containerId, MerchantOffers offers, int villagerLevel, int villagerXp, boolean showProgress, boolean canRestock, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(containerId, offers, villagerLevel, villagerXp, showProgress, canRestock);
-    }
-
-    @WrapMethod(method = "openItemGui")
-    private void openItemGui(ItemStack stack, InteractionHand hand, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(stack, hand);
-    }
-
     @WrapMethod(method = "removeVehicle")
     private void removeVehicle(Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -311,26 +222,8 @@ public class VirtualPlayerMixin {
         original.call();
     }
 
-    @WrapMethod(method = "crit")
-    private void crit(Entity entityHit, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(entityHit);
-    }
-
-    @WrapMethod(method = "magicCrit")
-    private void magicCrit(Entity entityHit, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(entityHit);
-    }
-
     @WrapMethod(method = "sweepAttack")
     private void sweepAttack(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
-    @WrapMethod(method = "respawn")
-    private void respawn(Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call();
     }
@@ -339,12 +232,6 @@ public class VirtualPlayerMixin {
     private void remove(Entity.RemovalReason reason, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(reason);
-    }
-
-    @WrapMethod(method = "updateTutorialInventoryAction")
-    private void updateTutorialInventoryAction(ItemStack carried, ItemStack clicked, ClickAction action, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(carried, clicked, action);
     }
 
     @WrapMethod(method = "startSleepInBed")
@@ -365,12 +252,6 @@ public class VirtualPlayerMixin {
         original.call();
     }
 
-    @WrapMethod(method = "displayClientMessage")
-    private void displayClientMessage(Component chatComponent, boolean actionBar, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(chatComponent, actionBar);
-    }
-
     @WrapMethod(method = "awardStat(Lnet/minecraft/resources/ResourceLocation;)V")
     private void awardStat(ResourceLocation statKey, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -387,42 +268,6 @@ public class VirtualPlayerMixin {
     private void awardStat(Stat<?> stat, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(stat);
-    }
-
-    @WrapMethod(method = "awardStat(Lnet/minecraft/stats/Stat;I)V")
-    private void awardStat(Stat<?> stat, int increment, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(stat, increment);
-    }
-
-    @WrapMethod(method = "resetStat")
-    private void resetStat(Stat<?> stat, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(stat);
-    }
-
-    @WrapMethod(method = "awardRecipes")
-    private int awardRecipes(Collection<RecipeHolder<?>> recipes, Operation<Integer> original) {
-        if (InteractableHandler.virtualizesInteract()) return 0;
-        return original.call(recipes);
-    }
-
-    @WrapMethod(method = "triggerRecipeCrafted")
-    private void triggerRecipeCrafted(RecipeHolder<?> recipe, List<ItemStack> items, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(recipe, items);
-    }
-
-    @WrapMethod(method = "awardRecipesByKey")
-    private void awardRecipesByKey(List<ResourceLocation> recipes, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(recipes);
-    }
-
-    @WrapMethod(method = "resetRecipes")
-    private int resetRecipes(Collection<RecipeHolder<?>> recipes, Operation<Integer> original) {
-        if (InteractableHandler.virtualizesInteract()) return 0;
-        return original.call(recipes);
     }
 
     @WrapMethod(method = "jumpFromGround")
@@ -515,12 +360,6 @@ public class VirtualPlayerMixin {
         original.call(exhaustion);
     }
 
-    @WrapMethod(method = "onUpdateAbilities")
-    private void onUpdateAbilities(Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call();
-    }
-
     @WrapMethod(method = "setItemSlot")
     private void setItemSlot(EquipmentSlot slot, ItemStack stack, Operation<Void> original) {
         if (InteractableHandler.virtualizesInteract()) return;
@@ -596,8 +435,7 @@ public class VirtualPlayerMixin {
     @WrapMethod(method = "eat")
     private ItemStack eat(Level level, ItemStack food, FoodProperties foodProperties, Operation<ItemStack> original) {
         if (InteractableHandler.virtualizesInteract()) return food;
-        original.call(level, food, foodProperties);
-        return food;
+        return original.call(level, food, foodProperties);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

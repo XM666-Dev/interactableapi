@@ -1,6 +1,5 @@
 package com.xm666.interactableapi.api;
 
-import com.xm666.interactableapi.InteractableAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -13,13 +12,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-@EventBusSubscriber(modid = InteractableAPI.MODID, value = Dist.CLIENT)
 public class InteractableHandler {
     public static final List<String> ENTITY_WHITELIST = List.of("net.minecraft.world.entity");
     public static final List<String> BLOCK_WHITELIST = List.of("net.minecraft.world.level.block");

@@ -29,16 +29,4 @@ public class VirtualItemCooldownsMixin {
         if (InteractableHandler.virtualizesInteract()) return;
         original.call(item);
     }
-
-    @WrapMethod(method = "onCooldownStarted")
-    private void onCooldownStarted(Item item, int ticks, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(item, ticks);
-    }
-
-    @WrapMethod(method = "onCooldownEnded")
-    private void onCooldownEnded(Item item, Operation<Void> original) {
-        if (InteractableHandler.virtualizesInteract()) return;
-        original.call(item);
-    }
 }
